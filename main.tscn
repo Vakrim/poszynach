@@ -1,22 +1,24 @@
 [gd_scene load_steps=3 format=3 uid="uid://dw1lfjjy50q3f"]
 
 [ext_resource type="PackedScene" uid="uid://big6vb18w4rqm" path="res://station.tscn" id="1_o7if4"]
-[ext_resource type="Script" path="res://connection.gd" id="2_2kolx"]
+[ext_resource type="PackedScene" uid="uid://c1rx5iwr0xdrm" path="res://connection.tscn" id="2_au8oa"]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Station" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(1218, 1016)
+position = Vector2(267, 503)
 
 [node name="Station2" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(1083, 442)
+position = Vector2(566, 315)
 rotation = 0.874224
 
-[node name="Connection" type="Line2D" parent="." node_paths=PackedStringArray("start_station", "end_station")]
-points = PackedVector2Array(1218, 984, 1058.45, 462.531)
-default_color = Color(0.672263, 0.957242, 0.802406, 1)
-begin_cap_mode = 2
-end_cap_mode = 2
-script = ExtResource("2_2kolx")
+[node name="Connection" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
 start_station = NodePath("../Station")
 end_station = NodePath("../Station2")
+
+[node name="Station3" parent="." instance=ExtResource("1_o7if4")]
+position = Vector2(889, 412)
+
+[node name="Connection2" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
+start_station = NodePath("../Station2")
+end_station = NodePath("../Station3")

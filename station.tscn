@@ -8,7 +8,7 @@ texture = ExtResource("1_swndr")
 script = ExtResource("2_gs17t")
 
 [node name="StationEnd" type="Node2D" parent="."]
-position = Vector2(0, -32)
+position = Vector2(32, 0)
 
 [node name="StationStart" type="Node2D" parent="."]
-position = Vector2(0, 32)
+position = Vector2(-32, 0)

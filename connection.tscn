@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1rx5iwr0xdrm"]
+
+[ext_resource type="Script" path="res://connection.gd" id="1_k720t"]
+
+[sub_resource type="Curve2D" id="Curve2D_jakmb"]
+
+[node name="Connection" type="Path2D"]
+curve = SubResource("Curve2D_jakmb")
+script = ExtResource("1_k720t")
+
+[node name="ConnectionLine" type="Line2D" parent="."]
+default_color = Color(0.672263, 0.957242, 0.802406, 1)
+begin_cap_mode = 2
+end_cap_mode = 2

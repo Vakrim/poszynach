@@ -6,4 +6,3 @@ func get_start() -> Node2D:
 
 func get_end() -> Node2D:
 	return $StationEnd
-	
