@@ -1,4 +1,4 @@
-@tool
+class_name Connection
 extends Path2D
 
 @export var start_station: Station:
@@ -24,15 +24,15 @@ func update_connection() -> void:
 
 	var start_station_step = Vector2.from_angle(start_station.rotation) * station_entrance_length
 
-	curve.add_point(start_station.get_end().global_position)
+	curve.add_point(start_station.global_position)
 
-	curve.add_point(start_station.get_end().global_position + start_station_step, Vector2.ZERO, start_station_step)
+	curve.add_point(start_station.global_position + start_station_step, Vector2.ZERO, start_station_step)
 
 	var end_station_step = Vector2.from_angle(end_station.rotation + PI) * station_entrance_length
 
-	curve.add_point(end_station.get_start().global_position + end_station_step, end_station_step, Vector2.ZERO)
+	curve.add_point(end_station.global_position + end_station_step, end_station_step, Vector2.ZERO)
 
-	curve.add_point(end_station.get_start().global_position)
+	curve.add_point(end_station.global_position)
 
 	if $ConnectionLine:
 		$ConnectionLine.points = curve.get_baked_points()
