@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://c1rx5iwr0xdrm"]
 
-[ext_resource type="Script" path="res://connection.gd" id="1_k720t"]
+[ext_resource type="Script" path="res://rail_connection/rail_connection.gd" id="1_k720t"]
 
 [sub_resource type="Curve2D" id="Curve2D_jakmb"]
 

@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://dw1lfjjy50q3f"]
 
-[ext_resource type="PackedScene" uid="uid://big6vb18w4rqm" path="res://station.tscn" id="1_o7if4"]
-[ext_resource type="PackedScene" uid="uid://c1rx5iwr0xdrm" path="res://connection.tscn" id="2_au8oa"]
+[ext_resource type="PackedScene" uid="uid://big6vb18w4rqm" path="res://station/station.tscn" id="1_o7if4"]
+[ext_resource type="PackedScene" uid="uid://c1rx5iwr0xdrm" path="res://rail_connection/rail_connection.tscn" id="2_au8oa"]
 
 [node name="Node2D" type="Node2D"]
 
