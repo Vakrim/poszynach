@@ -10,18 +10,19 @@
 [node name="Main" type="Node"]
 
 [node name="Station" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(267, 503)
+position = Vector2(128, 512)
+rotation = 4.71239
 
 [node name="Station2" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(566, 315)
-rotation = 0.874224
+position = Vector2(320, 128)
 
 [node name="Connection" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
 start_station = NodePath("../Station")
 end_station = NodePath("../Station2")
 
 [node name="Station3" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(889, 412)
+position = Vector2(640, 256)
+rotation = 1.5708
 
 [node name="Connection2" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
 start_station = NodePath("../Station2")

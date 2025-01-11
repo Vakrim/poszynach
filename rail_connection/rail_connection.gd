@@ -1,4 +1,4 @@
-class_name Connection
+class_name RailConnection
 extends Path2D
 
 @export var start_station: Station:
