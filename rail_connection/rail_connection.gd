@@ -20,6 +20,8 @@ func update_connection() -> void:
     if !start_station || !end_station:
         return
 
+    curve = Curve2D.new()
+
     curve.clear_points()
 
     var start_station_step = Vector2.from_angle(start_station.rotation) * station_entrance_length
