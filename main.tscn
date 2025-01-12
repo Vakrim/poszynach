@@ -1,32 +1,10 @@
-[gd_scene load_steps=7 format=3 uid="uid://dw1lfjjy50q3f"]
+[gd_scene load_steps=4 format=3 uid="uid://dw1lfjjy50q3f"]
 
-[ext_resource type="PackedScene" uid="uid://big6vb18w4rqm" path="res://station/station.tscn" id="1_o7if4"]
-[ext_resource type="PackedScene" uid="uid://c1rx5iwr0xdrm" path="res://rail_connection/rail_connection.tscn" id="2_au8oa"]
 [ext_resource type="Script" path="res://camera_2d.gd" id="3_nxi0b"]
 [ext_resource type="Theme" uid="uid://b7dceiu384spx" path="res://theme.tres" id="4_8oag3"]
-[ext_resource type="Texture2D" uid="uid://ck30clohywxv1" path="res://station/station.png" id="4_l2cl8"]
-[ext_resource type="Script" path="res://building_input.gd" id="6_u2jdf"]
+[ext_resource type="PackedScene" uid="uid://cvbqs0timnjh5" path="res://rail_grid/rail_grid.tscn" id="7_cossi"]
 
 [node name="Main" type="Node"]
-
-[node name="Station" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(128, 512)
-rotation = 4.71239
-
-[node name="Station2" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(320, 128)
-
-[node name="Connection" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
-start_station = NodePath("../Station")
-end_station = NodePath("../Station2")
-
-[node name="Station3" parent="." instance=ExtResource("1_o7if4")]
-position = Vector2(640, 256)
-rotation = 1.5708
-
-[node name="Connection2" parent="." node_paths=PackedStringArray("start_station", "end_station") instance=ExtResource("2_au8oa")]
-start_station = NodePath("../Station2")
-end_station = NodePath("../Station3")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position_smoothing_enabled = true
@@ -39,8 +17,8 @@ script = ExtResource("3_nxi0b")
 anchors_preset = 2
 anchor_top = 1.0
 anchor_bottom = 1.0
-offset_top = -88.0
-offset_right = 189.0
+offset_top = -47.0
+offset_right = 121.0
 grow_vertical = 0
 theme = ExtResource("4_8oag3")
 
@@ -54,21 +32,10 @@ layout_mode = 2
 layout_mode = 2
 focus_mode = 0
 text = "Station"
-icon = ExtResource("4_l2cl8")
 
 [node name="RailButton" type="Button" parent="UI/PanelContainer/MarginContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
 text = "Rail"
 
-[node name="BuildingInput" type="Node2D" parent="." node_paths=PackedStringArray("building_node")]
-script = ExtResource("6_u2jdf")
-building_node = NodePath("..")
-
-[node name="GhostStation" type="Sprite2D" parent="BuildingInput"]
-visible = false
-modulate = Color(0, 1, 1, 0.666667)
-texture = ExtResource("4_l2cl8")
-
-[connection signal="pressed" from="UI/PanelContainer/MarginContainer/HBoxContainer/StationButton" to="BuildingInput" method="_on_station_button_pressed"]
-[connection signal="pressed" from="UI/PanelContainer/MarginContainer/HBoxContainer/RailButton" to="BuildingInput" method="_on_rail_button_pressed"]
+[node name="RailGrid" parent="." instance=ExtResource("7_cossi")]
