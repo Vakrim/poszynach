@@ -1,8 +1,7 @@
-[gd_scene load_steps=5 format=3 uid="uid://dw1lfjjy50q3f"]
+[gd_scene load_steps=4 format=3 uid="uid://dw1lfjjy50q3f"]
 
 [ext_resource type="Script" path="res://camera_2d.gd" id="3_nxi0b"]
 [ext_resource type="Theme" uid="uid://b7dceiu384spx" path="res://theme.tres" id="4_8oag3"]
-[ext_resource type="Script" path="res://path_finding.gd" id="4_he3h2"]
 [ext_resource type="PackedScene" uid="uid://cvbqs0timnjh5" path="res://rail_grid/rail_grid.tscn" id="7_cossi"]
 
 [node name="Main" type="Node"]
@@ -40,7 +39,3 @@ focus_mode = 0
 text = "Rail"
 
 [node name="RailGrid" parent="." instance=ExtResource("7_cossi")]
-
-[node name="PathFinding" type="Node2D" parent="." node_paths=PackedStringArray("rail_grid")]
-script = ExtResource("4_he3h2")
-rail_grid = NodePath("../RailGrid")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=4 uid="uid://cvbqs0timnjh5"]
+[gd_scene load_steps=17 format=4 uid="uid://cvbqs0timnjh5"]
 
 [ext_resource type="Texture2D" uid="uid://cvk2fbdvsase" path="res://rail_grid/rails-tileset.png" id="1_tp5ej"]
 [ext_resource type="Script" path="res://rail_grid/rail_grid.gd" id="1_xi0ee"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://rail_grid/edges.gd" id="6_w8aok"]
 [ext_resource type="Texture2D" uid="uid://bntu4bi4tch82" path="res://rail_grid/hextile.png" id="7_a6b3g"]
 [ext_resource type="Script" path="res://rail_grid/grid.gd" id="8_owd5w"]
+[ext_resource type="Script" path="res://rail_grid/edges_debugger.gd" id="10_k4ip6"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7mk0m"]
 texture = ExtResource("1_tp5ej")
@@ -127,6 +128,10 @@ script = ExtResource("6_w8aok")
 modulate = Color(1, 1, 1, 0.35)
 tile_set = SubResource("TileSet_fdjwu")
 script = ExtResource("8_owd5w")
+
+[node name="EdgesDebugger" type="Node2D" parent="." node_paths=PackedStringArray("edges")]
+script = ExtResource("10_k4ip6")
+edges = NodePath("../EdgesShader/Edges")
 
 [connection signal="edge_created" from="EdgesShader/Edges" to="." method="_on_edge_created"]
 [connection signal="edge_of_master_changed" from="EdgesShader/Edges" to="Rails" method="_on_edges_edge_changed"]

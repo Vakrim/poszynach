@@ -1,4 +1,5 @@
 @tool
+class_name Edges
 extends TileMapLayer
 
 @export var repaint: bool:
@@ -10,7 +11,7 @@ signal edge_of_master_changed(master_position: Vector2i, connections_index: int)
 signal edge_created(edge_data: EdgeData)
 signal edge_removed(edge_data: EdgeData)
 
-static var edges_by_position: Dictionary = {}
+var edges_by_position: Dictionary = {}
 
 const CONNECTION_TILE = Vector2i(0, 0)
 const CONNECTION_PLACEHOLDER_TILE = Vector2i(2, 0)
@@ -41,6 +42,8 @@ func _unhandled_input(event: InputEvent) -> void:
             edges_by_position[clicked_tile_position] = edge_data
             edge_created.emit(edge_data)
 
+            print('just created new connections: ', get_connections(edge_data).size())
+
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
             set_cell(clicked_tile_position, 0, CONNECTION_PLACEHOLDER_TILE)
             notify_master_tiles_about_change(clicked_tile_position)
@@ -50,11 +53,11 @@ func _unhandled_input(event: InputEvent) -> void:
             edge_removed.emit(edge_data)
 
 func build_edge_data(edge_tile_position: Vector2i) -> EdgeData:
-    var edge_data = EdgeData.new()
-    edge_data.grid_position = edge_tile_position
-    edge_data.world_position = to_global(map_to_local(edge_tile_position))
-    edge_data.world_normal_rotation = get_edge_normal_rotation(edge_tile_position)
-    return edge_data
+    return EdgeData.new(
+        edge_tile_position,
+        to_global(map_to_local(edge_tile_position)),
+        get_edge_normal(edge_tile_position)
+    )
 
 func notify_master_tiles_about_change(changed_edge_tile_position: Vector2i) -> void:
     for neighbor in get_surrounding_cells(changed_edge_tile_position):
@@ -99,32 +102,33 @@ func get_edge_normal(edge_tile_position: Vector2i) -> TileSet.CellNeighbor:
     assert(false, "Edge direction not found")
     return RIGHT_SIDE;
 
-func get_edge_normal_rotation(edge_tile_position: Vector2i) -> float:
-    match get_edge_normal(edge_tile_position):
-        TOP_RIGHT_SIDE:
-            return -PI / 3.0
-        RIGHT_SIDE:
-            return 0.0
-        BOTTOM_RIGHT_SIDE:
-            return PI / 3.0
-        _:
-            assert(false, "Edge direction not found")
-            return 0.0
+func get_connections(edge_data: EdgeData) -> Array[EdgeData.EdgeWithDirection]:
+    var connections: Array[EdgeData.EdgeWithDirection] = []
 
-func get_connections(edge_tile_position: Vector2i) -> Array[EdgeData]:
-    var connections: Array[EdgeData] = []
+    var edge_tile_position: Vector2i = edge_data.grid_position
 
     var normal = get_edge_normal(edge_tile_position)
 
-    var first_step_tile = get_neighbor_cell(edge_tile_position, normal)
+    connections.append_array(get_connections_for_direction(edge_tile_position, normal))
 
-    print_rich(SECOND_STEP_CONNECTIONS)
-    print(normal)
+    var opposite = Direction.get_opposite_direction(normal)
 
-    for second_step in SECOND_STEP_CONNECTIONS[normal]:
-        var second_step_tile = get_neighbor_cell(first_step_tile, second_step)
+    connections.append_array(get_connections_for_direction(edge_tile_position, opposite))
+
+    return connections
+
+func get_connections_for_direction(edge_tile_position: Vector2i, direction: TileSet.CellNeighbor) -> Array[EdgeData.EdgeWithDirection]:
+    var connections: Array[EdgeData.EdgeWithDirection] = []
+
+    var first_step_tile = get_neighbor_cell(edge_tile_position, direction)
+
+    for second_step_direction in SECOND_STEP_CONNECTIONS[direction]:
+        var second_step_tile = get_neighbor_cell(first_step_tile, second_step_direction)
         if get_cell_atlas_coords(second_step_tile) == CONNECTION_TILE:
-            connections.append(edges_by_position[second_step_tile])
+            var edge_data = edges_by_position[second_step_tile] as EdgeData
+            connections.append(
+                edge_data.with_direction if edge_data.direction == second_step_direction else edge_data.with_opposite_direction
+            )
 
     return connections
 
@@ -149,4 +153,7 @@ const SECOND_STEP_CONNECTIONS = {
     TOP_RIGHT_SIDE: [TOP_LEFT_SIDE, TOP_RIGHT_SIDE, RIGHT_SIDE],
     RIGHT_SIDE: [TOP_RIGHT_SIDE, RIGHT_SIDE, BOTTOM_RIGHT_SIDE],
     BOTTOM_RIGHT_SIDE: [RIGHT_SIDE, BOTTOM_RIGHT_SIDE, BOTTOM_LEFT_SIDE],
+    BOTTOM_LEFT_SIDE: [BOTTOM_RIGHT_SIDE, BOTTOM_LEFT_SIDE, LEFT_SIDE],
+    LEFT_SIDE: [BOTTOM_LEFT_SIDE, LEFT_SIDE, TOP_LEFT_SIDE],
+    TOP_LEFT_SIDE: [LEFT_SIDE, TOP_LEFT_SIDE, TOP_RIGHT_SIDE],
 }
