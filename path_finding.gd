@@ -14,8 +14,7 @@ func _on_edge_created(edge: Edge.WithDirection) -> void:
     impl.add_point(
         edge.id,
         edge.get_edge().world_position
-            + Direction.get_vec(edge.direction).rotated(PI / 2) * 23
-        )
+    )
 
     queue_redraw()
 
@@ -45,3 +44,6 @@ func _draw() -> void:
                 Color(0, 1, 0, 0.5),
                 2
             )
+
+func find_path(from: Edge.WithDirection, to: Edge.WithDirection) -> PackedVector2Array:
+    return impl.get_point_path(from.id, to.id)

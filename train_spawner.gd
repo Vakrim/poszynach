@@ -1,0 +1,30 @@
+class_name TrainSpawner
+extends Node
+
+@export var path_finding: PathFinding
+@export var rail_grid: RailGrid
+
+var train_scene = preload("res://train/train.tscn")
+
+var edges_count = 0
+
+func _process(_delta: float) -> void:
+    var trains = get_tree().get_nodes_in_group("trains") as Array[Train]
+
+    if trains.size() * 5 < edges_count:
+        var train = train_scene.instantiate()
+        var edge = rail_grid.get_edges().pick_random()
+        train.position = edge.get_edge().world_position
+        train.rotation = Direction.get_rotation(edge.direction)
+        train.current_node = edge
+        train.rail_grid = rail_grid
+        train.path_finding = path_finding
+
+        trains.append(train)
+        get_parent().add_child(train)
+
+func _on_rail_grid_edge_created(_edge: Edge.WithDirection) -> void:
+    edges_count += 1
+
+func _on_rail_grid_edge_removed(_edge: Edge.WithDirection) -> void:
+    edges_count -= 1

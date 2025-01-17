@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3 uid="uid://dw1lfjjy50q3f"]
+[gd_scene load_steps=6 format=3 uid="uid://dw1lfjjy50q3f"]
 
 [ext_resource type="Script" path="res://camera_2d.gd" id="3_nxi0b"]
 [ext_resource type="Theme" uid="uid://b7dceiu384spx" path="res://theme.tres" id="4_8oag3"]
 [ext_resource type="Script" path="res://path_finding.gd" id="4_w4wwt"]
+[ext_resource type="Script" path="res://train_spawner.gd" id="5_2fuwd"]
 [ext_resource type="PackedScene" uid="uid://cvbqs0timnjh5" path="res://rail_grid/rail_grid.tscn" id="7_cossi"]
 
 [node name="Main" type="Node"]
@@ -42,5 +43,15 @@ text = "Rail"
 [node name="RailGrid" parent="." instance=ExtResource("7_cossi")]
 
 [node name="PathFinding" type="Node2D" parent="." node_paths=PackedStringArray("rail_grid")]
+unique_name_in_owner = true
+visible = false
 script = ExtResource("4_w4wwt")
 rail_grid = NodePath("../RailGrid")
+
+[node name="TrainSpawner" type="Node" parent="." node_paths=PackedStringArray("path_finding", "rail_grid")]
+script = ExtResource("5_2fuwd")
+path_finding = NodePath("../PathFinding")
+rail_grid = NodePath("../RailGrid")
+
+[connection signal="edge_created" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_created"]
+[connection signal="edge_removed" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_removed"]
