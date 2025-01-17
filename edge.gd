@@ -38,19 +38,22 @@ class WithDirection:
     var direction: TileSet.CellNeighbor
 
     func _init(
-        edge_data_: Edge,
+        edge_: Edge,
         direction_: TileSet.CellNeighbor
     ) -> void:
         self.id = next_id
         next_id += 1
-        self.edge = weakref(edge_data_)
+        self.edge = weakref(edge_)
         self.direction = direction_
+
+    func get_edge() -> Edge:
+        return self.edge.get_ref()
 
     func get_opposite() -> WithDirection:
         if self.edge.get_ref().with_direction == self:
             return self.edge.get_ref().with_opposite_direction
         else:
-            return self.edge.get_ref().with_opposite_direction
+            return self.edge.get_ref().with_direction
 
 class Connection:
     var from: WithDirection

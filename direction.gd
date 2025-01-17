@@ -42,3 +42,6 @@ static func get_rotation(direction: TileSet.CellNeighbor) -> float:
         _:
             assert(false, "Direction not found")
             return 0.0
+
+static func get_vec(direction: TileSet.CellNeighbor) -> Vector2:
+    return Vector2.RIGHT.rotated(get_rotation(direction))
