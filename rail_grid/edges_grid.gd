@@ -1,5 +1,5 @@
 @tool
-class_name Edges
+class_name EdgesGrid
 extends TileMapLayer
 
 @export var repaint: bool:
@@ -8,8 +8,8 @@ extends TileMapLayer
 
 signal edge_of_master_changed(master_position: Vector2i, connections_index: int)
 
-signal edge_created(edge_data: EdgeData)
-signal edge_removed(edge_data: EdgeData)
+signal edge_created(edge: Edge)
+signal edge_removed(edge: Edge)
 
 var edges_by_position: Dictionary = {}
 
@@ -38,22 +38,22 @@ func _unhandled_input(event: InputEvent) -> void:
             set_cell(clicked_tile_position, 0, CONNECTION_TILE)
             notify_master_tiles_about_change(clicked_tile_position)
 
-            var edge_data = build_edge_data(clicked_tile_position)
-            edges_by_position[clicked_tile_position] = edge_data
-            edge_created.emit(edge_data)
+            var edge = build_edge_data(clicked_tile_position)
+            edges_by_position[clicked_tile_position] = edge
+            edge_created.emit(edge)
 
-            print('just created new connections: ', get_connections(edge_data).size())
+            print('just created new connections: ', get_connections(edge).size())
 
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
             set_cell(clicked_tile_position, 0, CONNECTION_PLACEHOLDER_TILE)
             notify_master_tiles_about_change(clicked_tile_position)
 
-            var edge_data = edges_by_position[clicked_tile_position]
+            var edge = edges_by_position[clicked_tile_position]
             edges_by_position.erase(clicked_tile_position)
-            edge_removed.emit(edge_data)
+            edge_removed.emit(edge)
 
-func build_edge_data(edge_tile_position: Vector2i) -> EdgeData:
-    return EdgeData.new(
+func build_edge_data(edge_tile_position: Vector2i) -> Edge:
+    return Edge.new(
         edge_tile_position,
         to_global(map_to_local(edge_tile_position)),
         get_edge_normal(edge_tile_position)
@@ -102,32 +102,34 @@ func get_edge_normal(edge_tile_position: Vector2i) -> TileSet.CellNeighbor:
     assert(false, "Edge direction not found")
     return RIGHT_SIDE;
 
-func get_connections(edge_data: EdgeData) -> Array[EdgeData.EdgeWithDirection]:
-    var connections: Array[EdgeData.EdgeWithDirection] = []
+func get_connections(edge: Edge) -> Array[Edge.Connection]:
+    var connections: Array[Edge.Connection] = []
 
-    var edge_tile_position: Vector2i = edge_data.grid_position
+    var edge_tile_position: Vector2i = edge.grid_position
 
-    var normal = get_edge_normal(edge_tile_position)
+    var normal = edge.direction
 
-    connections.append_array(get_connections_for_direction(edge_tile_position, normal))
+    for connected in get_connected_for_direction(edge_tile_position, normal):
+        connections.append(Edge.Connection.new(edge.with_direction, connected))
 
     var opposite = Direction.get_opposite_direction(normal)
 
-    connections.append_array(get_connections_for_direction(edge_tile_position, opposite))
+    for connected in get_connected_for_direction(edge_tile_position, opposite):
+        connections.append(Edge.Connection.new(edge.with_opposite_direction, connected))
 
     return connections
 
-func get_connections_for_direction(edge_tile_position: Vector2i, direction: TileSet.CellNeighbor) -> Array[EdgeData.EdgeWithDirection]:
-    var connections: Array[EdgeData.EdgeWithDirection] = []
+func get_connected_for_direction(edge_tile_position: Vector2i, direction: TileSet.CellNeighbor) -> Array[Edge.WithDirection]:
+    var connections: Array[Edge.WithDirection] = []
 
     var first_step_tile = get_neighbor_cell(edge_tile_position, direction)
 
     for second_step_direction in SECOND_STEP_CONNECTIONS[direction]:
         var second_step_tile = get_neighbor_cell(first_step_tile, second_step_direction)
         if get_cell_atlas_coords(second_step_tile) == CONNECTION_TILE:
-            var edge_data = edges_by_position[second_step_tile] as EdgeData
+            var edge = edges_by_position[second_step_tile] as Edge
             connections.append(
-                edge_data.with_direction if edge_data.direction == second_step_direction else edge_data.with_opposite_direction
+                edge.with_direction if edge.direction == second_step_direction else edge.with_opposite_direction
             )
 
     return connections

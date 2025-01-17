@@ -7,13 +7,13 @@ var impl = AStar2D.new()
 
 var impl_point_id = {}
 
-var edges: Array[EdgeData] = []
+var edges: Array[Edge] = []
 
 func _ready() -> void:
     rail_grid.edge_created.connect(_on_edge_created)
     rail_grid.edge_removed.connect(_on_edge_removed)
 
-func _on_edge_created(edge: EdgeData) -> void:
+func _on_edge_created(edge: Edge) -> void:
     var id = impl.get_available_point_id()
     impl.add_point(id, edge.world_position)
     impl_point_id[edge.id] = id
@@ -25,7 +25,7 @@ func _on_edge_created(edge: EdgeData) -> void:
 
     queue_redraw()
 
-func _on_edge_removed(edge: EdgeData) -> void:
+func _on_edge_removed(edge: Edge) -> void:
     impl.remove_point(impl_point_id[edge.id])
     impl_point_id.erase(edge.id)
     edges.erase(edge)
