@@ -42,8 +42,6 @@ func _unhandled_input(event: InputEvent) -> void:
             edges_by_position[clicked_tile_position] = edge
             edge_created.emit(edge)
 
-            print('just created new connections: ', get_connections(edge).size())
-
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
             set_cell(clicked_tile_position, 0, CONNECTION_PLACEHOLDER_TILE)
             notify_master_tiles_about_change(clicked_tile_position)
