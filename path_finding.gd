@@ -45,5 +45,11 @@ func _draw() -> void:
                 2
             )
 
-func find_path(from: Edge.WithDirection, to: Edge.WithDirection) -> PackedVector2Array:
-    return impl.get_point_path(from.id, to.id)
+func find_path(from: Edge.WithDirection, to: Edge.WithDirection) -> Array[Edge.WithDirection]:
+    var ids = impl.get_id_path(from.id, to.id)
+
+    var result: Array[Edge.WithDirection] = []
+    for id in ids:
+        result.append(rail_grid.edges[id])
+
+    return result

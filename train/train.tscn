@@ -9,3 +9,10 @@ script = ExtResource("1_3lacv")
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 5
 texture = ExtResource("1_sj3ny")
+
+[node name="TrainPath" type="Path2D" parent="."]
+unique_name_in_owner = true
+top_level = true
+
+[node name="Follower" type="PathFollow2D" parent="TrainPath"]
+unique_name_in_owner = true

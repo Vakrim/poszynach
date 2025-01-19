@@ -11,29 +11,25 @@ var current_target: Edge.WithDirection
 
 var speed = 75
 
-var path: PackedVector2Array = PackedVector2Array()
+@onready var follower: PathFollow2D = %Follower
+@onready var train_path: Path2D = %TrainPath
 
 func _process(delta: float) -> void:
-    if path.size() == 0:
-        if current_target != null:
-            current_node = current_target
-
+    if current_target == null:
         find_new_target()
         return
 
-    var target = path[0]
+    var distance_to_travel = speed * delta
 
-    var direction = target - self.global_position
-    var distance = direction.length()
-
-    if distance < speed * delta:
-        position = target
-        path.remove_at(0)
+    if follower.progress + distance_to_travel >= train_path.curve.get_baked_length():
+        current_node = current_target
+        find_new_target()
         return
 
-    var velocity = direction.normalized() * speed
-    position += velocity * delta
-    rotation = Vector2.RIGHT.rotated(rotation).slerp(direction.normalized(), 0.1).angle()
+    follower.progress += distance_to_travel
+
+    position = follower.global_position
+    rotation = follower.rotation
 
     if rotation_degrees < -90 or rotation_degrees > 90:
         scale = Vector2(1, -1)
@@ -43,7 +39,19 @@ func _process(delta: float) -> void:
 func find_new_target() -> void:
     current_target = rail_grid.get_edges().pick_random()
 
-    path = path_finding.find_path(current_node, current_target)
+    var curve = Curve2D.new()
+
+    var path = path_finding.find_path(current_node, current_target)
+
+    for i in range(path.size()):
+        var point = path[i].get_edge().world_position
+
+        var direction = Direction.get_vec(path[i].direction) * 40
+
+        curve.add_point(point, -direction, direction)
+
+    train_path.curve = curve
+    follower.progress = 0
 
     if path.size() == 0:
         current_target = null
