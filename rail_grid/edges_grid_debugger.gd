@@ -18,7 +18,7 @@ func _draw() -> void:
 
         for connection in edges_grid.get_connections(edge):
             var start = edge.world_position
-            var end = connection.to.edge.get_ref().world_position
+            var end = connection.to.get_edge().world_position
 
             draw_line(
                 start,

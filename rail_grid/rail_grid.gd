@@ -6,14 +6,22 @@ signal connection_created(from: Edge.WithDirection, to: Edge.WithDirection)
 
 @onready var edges_grid = %EdgesGrid
 
+var edges = Dictionary() # id: Edge.WithDirection
+
 func _on_edge_created(edge: Edge) -> void:
+    edges[edge.with_direction.id] = edge.with_direction
     edge_created.emit(edge.with_direction)
+
+    edges[edge.with_opposite_direction.id] = edge.with_opposite_direction
     edge_created.emit(edge.with_opposite_direction)
 
     emit_connections_created(edge)
 
 func _on_edge_removed(edge: Edge) -> void:
+    edges.erase(edge.with_direction.id)
     edge_removed.emit(edge.with_direction)
+
+    edges.erase(edge.with_opposite_direction.id)
     edge_removed.emit(edge.with_opposite_direction)
 
 func get_connections(edge: Edge) -> Array[Edge.Connection]:
@@ -27,8 +35,7 @@ func emit_connections_created(edge: Edge) -> void:
 
 func get_edges() -> Array[Edge.WithDirection]:
     var list: Array[Edge.WithDirection] = []
-    for pos in edges_grid.edges_by_position:
-        var edge = edges_grid.edges_by_position[pos] as Edge
-        list.append(edge.with_direction)
-        list.append(edge.with_opposite_direction)
+    for id in edges:
+        var edge = edges[id] as Edge.WithDirection
+        list.append(edge)
     return list
