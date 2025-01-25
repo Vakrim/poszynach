@@ -2,10 +2,6 @@
 class_name EdgesGrid
 extends TileMapLayer
 
-@export var repaint: bool:
-    set(new_value):
-        init_center_of_master_tiles()
-
 signal edge_of_master_changed(master_position: Vector2i, connections_index: int)
 
 signal edge_created(edge: Edge)
@@ -16,10 +12,10 @@ var edges_by_position: Dictionary = {}
 const CONNECTION_TILE = Vector2i(0, 0)
 const CONNECTION_PLACEHOLDER_TILE = Vector2i(2, 0)
 
-func init_center_of_master_tiles() -> void:
+func init_center_of_master_tiles(size: int) -> void:
     clear()
-    for x in range(-20, 20):
-        for y in range(-20, 20):
+    for x in range(-size, size):
+        for y in range(-size, size):
             if is_tile_center(Vector2i(x, y)):
                 continue
             set_cell(
@@ -35,20 +31,25 @@ func _unhandled_input(event: InputEvent) -> void:
         var clicked_tile = get_cell_atlas_coords(clicked_tile_position)
 
         if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed and clicked_tile == CONNECTION_PLACEHOLDER_TILE:
-            set_cell(clicked_tile_position, 0, CONNECTION_TILE)
-            notify_master_tiles_about_change(clicked_tile_position)
-
-            var edge = build_edge_data(clicked_tile_position)
-            edges_by_position[clicked_tile_position] = edge
-            edge_created.emit(edge)
-
+            create_edge(clicked_tile_position)
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
-            set_cell(clicked_tile_position, 0, CONNECTION_PLACEHOLDER_TILE)
-            notify_master_tiles_about_change(clicked_tile_position)
+            remove_edge(clicked_tile_position)
 
-            var edge = edges_by_position[clicked_tile_position]
-            edges_by_position.erase(clicked_tile_position)
-            edge_removed.emit(edge)
+func create_edge(map_position: Vector2i) -> void:
+    set_cell(map_position, 0, CONNECTION_TILE)
+    notify_master_tiles_about_change(map_position)
+
+    var edge = build_edge_data(map_position)
+    edges_by_position[map_position] = edge
+    edge_created.emit(edge)
+
+func remove_edge(map_position: Vector2i) -> void:
+    set_cell(map_position, 0, CONNECTION_PLACEHOLDER_TILE)
+    notify_master_tiles_about_change(map_position)
+
+    var edge = edges_by_position[map_position]
+    edges_by_position.erase(map_position)
+    edge_removed.emit(edge)
 
 func build_edge_data(edge_tile_position: Vector2i) -> Edge:
     return Edge.new(
