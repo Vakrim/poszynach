@@ -4,6 +4,8 @@ extends Node2D
 var rail_grid: RailGrid
 var edge: Edge.WithDirection
 
+var transport_requests: Array[TransportRequest] = []
+
 func _ready() -> void:
     rail_grid = get_parent().get_node('%RailGrid') as RailGrid
 
