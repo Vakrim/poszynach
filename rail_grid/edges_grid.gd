@@ -40,13 +40,15 @@ func _unhandled_input(event: InputEvent) -> void:
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
             remove_edge(clicked_tile_position)
 
-func create_edge(map_position: Vector2i) -> void:
+func create_edge(map_position: Vector2i) -> Edge:
     set_cell(map_position, 0, CONNECTION_TILE)
     notify_master_tiles_about_change(map_position)
 
     var edge = build_edge(map_position)
     edges_by_position[map_position] = edge
     edge_created.emit(edge)
+
+    return edge
 
 func remove_edge(map_position: Vector2i) -> void:
     set_cell(map_position, 0, CONNECTION_PLACEHOLDER_TILE)
