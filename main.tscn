@@ -50,27 +50,31 @@ visible = false
 script = ExtResource("4_w4wwt")
 rail_grid = NodePath("../RailGrid")
 
-[node name="TrainSpawner" type="Node" parent="." node_paths=PackedStringArray("path_finding", "rail_grid")]
+[node name="TrainSpawner" type="Node" parent="." node_paths=PackedStringArray("path_finding", "rail_grid", "on_rails")]
 script = ExtResource("5_2fuwd")
 path_finding = NodePath("../PathFinding")
 rail_grid = NodePath("../RailGrid")
+on_rails = NodePath("../OnRails")
 
-[node name="Station" parent="." instance=ExtResource("6_i8sp2")]
+[node name="OnRails" type="Node2D" parent="."]
+y_sort_enabled = true
+
+[node name="Station" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(0, 70)
 
-[node name="Station2" parent="." instance=ExtResource("6_i8sp2")]
+[node name="Station2" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(-900, 595)
 
-[node name="Station3" parent="." instance=ExtResource("6_i8sp2")]
+[node name="Station3" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(600, 700)
 
-[node name="Station4" parent="." instance=ExtResource("6_i8sp2")]
+[node name="Station4" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(-840, -560)
 
-[node name="Station5" parent="." instance=ExtResource("6_i8sp2")]
+[node name="Station5" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(1200, -980)
 
-[node name="Station6" parent="." instance=ExtResource("6_i8sp2")]
+[node name="Station6" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(420, -875)
 
 [connection signal="edge_created" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_created"]

@@ -30,6 +30,12 @@ func create_edge(global_position: Vector2) -> void:
 func remove_edge(global_position: Vector2) -> void:
     edges_grid.remove_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
 
+func block_edge(global_position: Vector2) -> void:
+    edges_grid.block_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+
+func unblock_edge(global_position: Vector2) -> void:
+    edges_grid.unblock_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+
 func get_connections(edge: Edge) -> Array[Edge.Connection]:
     return edges_grid.get_connections(edge)
 

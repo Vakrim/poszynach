@@ -7,6 +7,7 @@ extends Node
 
 @export var size: int = 30:
     set(new_value):
+        assert(new_value > 0 and new_value <= 100, "Size must be between 1 and 100")
         size = new_value
         if Engine.is_editor_hint():
             generate_grid()
