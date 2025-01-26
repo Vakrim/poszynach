@@ -43,5 +43,23 @@ static func get_rotation(direction: TileSet.CellNeighbor) -> float:
             assert(false, "Direction not found")
             return 0.0
 
+static func get_direction_from_rotation(rotation: float) -> TileSet.CellNeighbor:
+    var epsilon = 0.0001
+    if abs(rotation - (-PI / 3.0)) < epsilon:
+        return TOP_RIGHT
+    elif abs(rotation - 0.0) < epsilon:
+        return RIGHT
+    elif abs(rotation - (PI / 3.0)) < epsilon:
+        return BOTTOM_RIGHT
+    elif abs(rotation - (2 * PI / 3.0)) < epsilon:
+        return BOTTOM_LEFT
+    elif abs(rotation - PI) < epsilon:
+        return LEFT
+    elif abs(rotation - (-2 * PI / 3.0)) < epsilon:
+        return TOP_LEFT
+    else:
+        assert(false, "Direction not found")
+        return RIGHT
+
 static func get_vec(direction: TileSet.CellNeighbor) -> Vector2:
     return Vector2.RIGHT.rotated(get_rotation(direction))

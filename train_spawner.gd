@@ -12,15 +12,19 @@ var edges_count = 0
 func _process(_delta: float) -> void:
     var trains = get_tree().get_nodes_in_group("trains") as Array[Train]
 
+    var stations = get_tree().get_nodes_in_group("stations") as Array[Station]
+
     if trains.size() * 5 < edges_count:
+        var station = stations.pick_random()
+        var edge = station.edge
+
         var train = train_scene.instantiate()
-        var edge = rail_grid.get_edges().pick_random()
         train.position = edge.get_edge().world_position
         train.rotation = Direction.get_rotation(edge.direction)
         train.current_node = edge
         train.rail_grid = rail_grid
         train.path_finding = path_finding
-        
+
         on_rails.add_child(train)
 
 func _on_rail_grid_edge_created(_edge: Edge.WithDirection) -> void:
