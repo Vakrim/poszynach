@@ -3,6 +3,7 @@ extends Node
 
 @export var path_finding: PathFinding
 @export var rail_grid: RailGrid
+@export var on_rails: Node2D
 
 var train_scene = preload("res://train/train.tscn")
 
@@ -19,9 +20,8 @@ func _process(_delta: float) -> void:
         train.current_node = edge
         train.rail_grid = rail_grid
         train.path_finding = path_finding
-
-        trains.append(train)
-        get_parent().add_child(train)
+        
+        on_rails.add_child(train)
 
 func _on_rail_grid_edge_created(_edge: Edge.WithDirection) -> void:
     edges_count += 1

@@ -7,7 +7,9 @@ signal edge_of_master_changed(master_position: Vector2i, connections_index: int)
 signal edge_created(edge: Edge)
 signal edge_removed(edge: Edge)
 
-var edges_by_position: Dictionary = {}
+var edges_by_position: Dictionary = {} # Vector2i: Edge
+
+var blocked_edges: Dictionary = {} # Vector2i: true
 
 const CONNECTION_TILE = Vector2i(0, 0)
 const CONNECTION_PLACEHOLDER_TILE = Vector2i(2, 0)
@@ -30,6 +32,9 @@ func _unhandled_input(event: InputEvent) -> void:
         var clicked_tile_position = local_to_map(to_local(get_global_mouse_position()))
         var clicked_tile = get_cell_atlas_coords(clicked_tile_position)
 
+        if blocked_edges.has(clicked_tile_position):
+            return
+
         if mouse_event.button_index == MOUSE_BUTTON_LEFT and mouse_event.pressed and clicked_tile == CONNECTION_PLACEHOLDER_TILE:
             create_edge(clicked_tile_position)
         elif mouse_event.button_index == MOUSE_BUTTON_RIGHT and mouse_event.pressed and clicked_tile == CONNECTION_TILE:
@@ -39,7 +44,7 @@ func create_edge(map_position: Vector2i) -> void:
     set_cell(map_position, 0, CONNECTION_TILE)
     notify_master_tiles_about_change(map_position)
 
-    var edge = build_edge_data(map_position)
+    var edge = build_edge(map_position)
     edges_by_position[map_position] = edge
     edge_created.emit(edge)
 
@@ -51,7 +56,13 @@ func remove_edge(map_position: Vector2i) -> void:
     edges_by_position.erase(map_position)
     edge_removed.emit(edge)
 
-func build_edge_data(edge_tile_position: Vector2i) -> Edge:
+func block_edge(map_position: Vector2i) -> void:
+    blocked_edges[map_position] = true
+
+func unblock_edge(map_position: Vector2i) -> void:
+    blocked_edges.erase(map_position)
+
+func build_edge(edge_tile_position: Vector2i) -> Edge:
     return Edge.new(
         edge_tile_position,
         to_global(map_to_local(edge_tile_position)),
