@@ -70,7 +70,7 @@ class MovingState extends State:
     var target = Edge.WithDirection
     var current_path: Array[Edge.WithDirection] = []
     var speed = 0.0
-    const BREAKING_TIME = 1.0
+    const BRAKING_TIME = 1.0
     const MAX_SPEED = 100.0
     const CRUISING_SPEED = 5.0
 
@@ -89,7 +89,7 @@ class MovingState extends State:
     func update(delta: float) -> void:
         var distance_to_reach_target = actor.train_path.curve.get_baked_length() - actor.follower.progress;
 
-        var target_speed = MAX_SPEED if distance_to_reach_target > speed * BREAKING_TIME else CRUISING_SPEED
+        var target_speed = MAX_SPEED if distance_to_reach_target > speed * BRAKING_TIME else CRUISING_SPEED
 
         speed = lerp(speed, target_speed, delta)
 
