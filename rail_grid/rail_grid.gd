@@ -24,17 +24,17 @@ func _on_edge_removed(edge: Edge) -> void:
     edges.erase(edge.with_opposite_direction.id)
     edge_removed.emit(edge.with_opposite_direction)
 
-func create_edge(global_position: Vector2) -> Edge:
-    return edges_grid.create_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+func create_edge(global_position_: Vector2) -> Edge:
+    return edges_grid.create_edge(edges_grid.local_to_map(edges_grid.to_local(global_position_)))
 
-func remove_edge(global_position: Vector2) -> void:
-    edges_grid.remove_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+func remove_edge(global_position_: Vector2) -> void:
+    edges_grid.remove_edge(edges_grid.local_to_map(edges_grid.to_local(global_position_)))
 
-func block_edge(global_position: Vector2) -> void:
-    edges_grid.block_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+func block_edge(global_position_: Vector2) -> void:
+    edges_grid.block_edge(edges_grid.local_to_map(edges_grid.to_local(global_position_)))
 
-func unblock_edge(global_position: Vector2) -> void:
-    edges_grid.unblock_edge(edges_grid.local_to_map(edges_grid.to_local(global_position)))
+func unblock_edge(global_position_: Vector2) -> void:
+    edges_grid.unblock_edge(edges_grid.local_to_map(edges_grid.to_local(global_position_)))
 
 func get_connections(edge: Edge) -> Array[Edge.Connection]:
     return edges_grid.get_connections(edge)
