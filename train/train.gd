@@ -58,21 +58,28 @@ class State:
         pass
 
 class IdleState extends State:
-    func update(_delta: float) -> void:
+    const MIN_IDLE_TIME = 1.0
+    var idle_timer := 0.0
+
+    func update(delta: float) -> void:
+        idle_timer += delta
+        if idle_timer < MIN_IDLE_TIME:
+            return
+
         var target = actor.rail_grid.get_edges().pick_random()
 
-        if (!target):
+        if !target:
             return
 
         actor.change_state(MovingState.new(target))
 
 class MovingState extends State:
-    var target = Edge.WithDirection
+    var target: Edge.WithDirection
     var current_path: Array[Edge.WithDirection] = []
     var speed = 0.0
-    const BRAKING_TIME = 1.0
-    const MAX_SPEED = 100.0
-    const CRUISING_SPEED = 5.0
+    const BRAKING_TIME := 1.0 # seconds
+    const MAX_SPEED := 100.0 # pixels per second
+    const CRUISING_SPEED := 5.0 # pixels per second
 
     func _init(target_: Edge.WithDirection) -> void:
         self.target = target_
