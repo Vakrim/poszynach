@@ -66,14 +66,34 @@ class IdleState extends State:
         if idle_timer < MIN_IDLE_TIME:
             return
 
-        var target = actor.rail_grid.get_edges().pick_random()
+        var target = find_nearest_station_with_transport_request()
 
         if !target:
+            idle_timer = 0
             return
 
-        actor.change_state(MovingState.new(target))
+        actor.change_state(GrabItemFromStationState.new(target))
 
-class MovingState extends State:
+    func find_nearest_station_with_transport_request() -> Station:
+        var stations = actor.get_tree().get_nodes_in_group('stations')
+
+        var nearest_station: Station = null
+        var min_distance = 10000
+
+        for station in stations:
+            if station.transport_requests.size() == 0:
+                continue
+
+            var distance = actor.find_path_to(station.edge).size()
+
+            if distance > 0 and distance < min_distance:
+                min_distance = distance
+                nearest_station = station
+
+        return nearest_station
+
+class Moving:
+    var actor: Train
     var target: Edge.WithDirection
     var current_path: Array[Edge.WithDirection] = []
     var speed = 0.0
@@ -81,19 +101,17 @@ class MovingState extends State:
     const MAX_SPEED := 100.0 # pixels per second
     const CRUISING_SPEED := 5.0 # pixels per second
 
-    func _init(target_: Edge.WithDirection) -> void:
+    func _init(actor_: Train, target_: Edge.WithDirection) -> void:
+        self.actor = actor_
         self.target = target_
 
-    func enter() -> void:
-        current_path = actor.find_path_to(target)
+    func update(delta: float, on_target_reached: Callable) -> void:
+        if current_path.size() == 0:
+            current_path = actor.find_path_to(target)
+            if current_path.size() == 0:
+                return
+            actor.navigate_path(current_path)
 
-        if current_path.size() == 0: # No path found
-            actor.change_state(IdleState.new())
-            return
-
-        actor.navigate_path(current_path)
-
-    func update(delta: float) -> void:
         var distance_to_reach_target = actor.train_path.curve.get_baked_length() - actor.follower.progress;
 
         var target_speed = MAX_SPEED if distance_to_reach_target > speed * BRAKING_TIME else CRUISING_SPEED
@@ -104,10 +122,44 @@ class MovingState extends State:
 
         if distance_to_reach_target <= distance_traveled_this_frame:
             actor.current_node = current_path[-1]
-            actor.change_state(IdleState.new())
+            on_target_reached.call()
             return
 
         actor.follower.progress += distance_traveled_this_frame
 
         actor.position = actor.follower.global_position
         actor.rotation = actor.follower.rotation
+
+class GrabItemFromStationState extends State:
+    var station: Station
+    var item: TransportRequest
+    var moving: Moving
+
+    func _init(station_: Station) -> void:
+        self.station = station_
+
+    func enter() -> void:
+        moving = Moving.new(actor, station.edge)
+        item = station.transport_requests.pop_front()
+
+    func update(delta: float) -> void:
+        moving.update(delta, self.reached_station)
+
+    func reached_station() -> void:
+        actor.change_state(DropItemAtStationState.new(item))
+
+class DropItemAtStationState extends State:
+    var item: TransportRequest
+    var moving: Moving
+
+    func _init(item_: TransportRequest) -> void:
+        self.item = item_
+
+    func enter() -> void:
+        moving = Moving.new(actor, item.destination.edge)
+
+    func update(delta: float) -> void:
+        moving.update(delta, self.reached_station)
+
+    func reached_station() -> void:
+        actor.change_state(IdleState.new())
