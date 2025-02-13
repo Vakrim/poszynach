@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=4 uid="uid://cvbqs0timnjh5"]
+[gd_scene load_steps=18 format=4 uid="uid://cvbqs0timnjh5"]
 
 [ext_resource type="Texture2D" uid="uid://cvk2fbdvsase" path="res://rail_grid/rails-tileset.png" id="1_tp5ej"]
 [ext_resource type="Script" path="res://rail_grid/rail_grid.gd" id="1_xi0ee"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://rail_grid/edges_grid.gd" id="6_w8aok"]
 [ext_resource type="Texture2D" uid="uid://bntu4bi4tch82" path="res://rail_grid/hextile.png" id="7_a6b3g"]
 [ext_resource type="Script" path="res://rail_grid/edges_grid_debugger.gd" id="10_k4ip6"]
+[ext_resource type="Script" path="res://rail_grid/initial_builder.gd" id="11_176ld"]
 [ext_resource type="Script" path="res://rail_grid/grid_builder_tool.gd" id="11_dfs5w"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_7mk0m"]
@@ -138,6 +139,10 @@ edges_grid = NodePath("../EdgesShader/EdgesGrid")
 [node name="GridBuilderTool" type="Node" parent="."]
 script = ExtResource("11_dfs5w")
 size = 17
+
+[node name="InitialBuilder" type="Node" parent="."]
+unique_name_in_owner = true
+script = ExtResource("11_176ld")
 
 [connection signal="edge_created" from="EdgesShader/EdgesGrid" to="." method="_on_edge_created"]
 [connection signal="edge_of_master_changed" from="EdgesShader/EdgesGrid" to="Rails" method="_on_edges_edge_changed"]

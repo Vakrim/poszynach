@@ -5,8 +5,14 @@ signal edge_removed(edge: Edge.WithDirection)
 signal connection_created(from: Edge.WithDirection, to: Edge.WithDirection)
 
 @onready var edges_grid = %EdgesGrid
+@onready var initial_builder = %InitialBuilder
+@export var initial_rail_setup: Node2D
 
 var edges = Dictionary() # id: Edge.WithDirection
+
+func _ready() -> void:
+    if initial_rail_setup:
+        initial_builder.create_initial_setup(initial_rail_setup)
 
 func _on_edge_created(edge: Edge) -> void:
     edges[edge.with_direction.id] = edge.with_direction
