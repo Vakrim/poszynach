@@ -42,8 +42,10 @@ layout_mode = 2
 focus_mode = 0
 text = "Rail"
 
-[node name="RailGrid" parent="." instance=ExtResource("7_cossi")]
+[node name="RailGrid" parent="." node_paths=PackedStringArray("initial_rail_setup") instance=ExtResource("7_cossi")]
 unique_name_in_owner = true
+initial_rail_setup = NodePath("../InitialRailSetup")
+metadata/_edit_lock_ = true
 
 [node name="PathFinding" type="Node2D" parent="." node_paths=PackedStringArray("rail_grid")]
 unique_name_in_owner = true
@@ -59,6 +61,7 @@ on_rails = NodePath("../OnRails")
 
 [node name="OnRails" type="Node2D" parent="."]
 y_sort_enabled = true
+metadata/_edit_lock_ = true
 
 [node name="Station" parent="OnRails" instance=ExtResource("6_i8sp2")]
 position = Vector2(0, 70)
@@ -80,6 +83,15 @@ position = Vector2(420, -875)
 
 [node name="Logistics" type="Node" parent="."]
 script = ExtResource("7_x3mi1")
+
+[node name="InitialRailSetup" type="Node2D" parent="."]
+
+[node name="Polygon2D" type="Polygon2D" parent="InitialRailSetup"]
+polygon = PackedVector2Array(-819, 575, -1051, 578, -1006, 518, -815, 508, -746, 562, -805, 574, -800, 609, -626, 602, -632, 574, -713, 553, -795, 474, -1015, 476, -1095, 572, -1171, 574, -1170, 610, -976, 609, -820, 608)
+
+[node name="Polygon2D2" type="Polygon2D" parent="InitialRailSetup"]
+position = Vector2(659, -523)
+polygon = PackedVector2Array(-1067, 606, -1015, 668, -937, 685, -792, 683, -680, 680, -564, 676, -510, 620, -588, 611, -1049, 606, -1049, 573, -756, 574, -793, 528, -1000, 510, -1062, 573, -1168, 616, -1189, 587, -1099, 561, -1012, 475, -770, 475, -574, 468, -505, 410, -475, 428, -556, 504, -748, 513, -703, 567, -495, 574, -376, 576, -333, 513, -295, 525, -358, 606, -445, 613, -523, 696, -660, 719, -928, 719, -1034, 700, -1085, 625, -1098, 596)
 
 [connection signal="edge_created" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_created"]
 [connection signal="edge_removed" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_removed"]
