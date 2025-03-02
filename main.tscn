@@ -42,16 +42,16 @@ layout_mode = 2
 focus_mode = 0
 text = "Rail"
 
-[node name="RailGrid" parent="." node_paths=PackedStringArray("initial_rail_setup") instance=ExtResource("7_cossi")]
-unique_name_in_owner = true
-initial_rail_setup = NodePath("../InitialRailSetup")
-metadata/_edit_lock_ = true
-
 [node name="PathFinding" type="Node2D" parent="." node_paths=PackedStringArray("rail_grid")]
 unique_name_in_owner = true
 visible = false
 script = ExtResource("4_w4wwt")
 rail_grid = NodePath("../RailGrid")
+
+[node name="RailGrid" parent="." node_paths=PackedStringArray("initial_rail_setup") instance=ExtResource("7_cossi")]
+unique_name_in_owner = true
+initial_rail_setup = NodePath("../InitialRailSetup")
+metadata/_edit_lock_ = true
 
 [node name="TrainSpawner" type="Node" parent="." node_paths=PackedStringArray("path_finding", "rail_grid", "on_rails")]
 script = ExtResource("5_2fuwd")
@@ -86,12 +86,27 @@ script = ExtResource("7_x3mi1")
 
 [node name="InitialRailSetup" type="Node2D" parent="."]
 
-[node name="Polygon2D" type="Polygon2D" parent="InitialRailSetup"]
+[node name="Block" type="Node2D" parent="InitialRailSetup"]
+
+[node name="Polygon2D" type="Polygon2D" parent="InitialRailSetup/Block"]
+color = Color(1, 0, 0, 0.117647)
+polygon = PackedVector2Array(-1087, -628, -1092, -498, -986, -471, -856, -477, -737, -474, -622, -485, -565, -487, -448, -555, -489, -642, -534, -711, -579, -750, -738, -744, -792, -747, -825, -784, -989, -799, -1024, -727, -1053, -683)
+
+[node name="CreateRail" type="Node2D" parent="InitialRailSetup"]
+
+[node name="Polygon2D" type="Polygon2D" parent="InitialRailSetup/CreateRail"]
+color = Color(1, 1, 1, 0.0980392)
 polygon = PackedVector2Array(-819, 575, -1051, 578, -1006, 518, -815, 508, -746, 562, -805, 574, -800, 609, -626, 602, -632, 574, -713, 553, -795, 474, -1015, 476, -1095, 572, -1171, 574, -1170, 610, -976, 609, -820, 608)
 
-[node name="Polygon2D2" type="Polygon2D" parent="InitialRailSetup"]
+[node name="Polygon2D2" type="Polygon2D" parent="InitialRailSetup/CreateRail"]
 position = Vector2(659, -523)
+color = Color(1, 1, 1, 0.0980392)
 polygon = PackedVector2Array(-1067, 606, -1015, 668, -937, 685, -792, 683, -680, 680, -564, 676, -510, 620, -588, 611, -1049, 606, -1049, 573, -756, 574, -793, 528, -1000, 510, -1062, 573, -1168, 616, -1189, 587, -1099, 561, -1012, 475, -770, 475, -574, 468, -505, 410, -475, 428, -556, 504, -748, 513, -703, 567, -495, 574, -376, 576, -333, 513, -295, 525, -358, 606, -445, 613, -523, 696, -660, 719, -928, 719, -1034, 700, -1085, 625, -1098, 596)
+
+[node name="Polygon2D3" type="Polygon2D" parent="InitialRailSetup/CreateRail"]
+position = Vector2(63, -1151)
+color = Color(1, 1, 1, 0.0980392)
+polygon = PackedVector2Array(-819, 575, -1051, 578, -1006, 518, -876.557, 511.223, -674, 510, -635, 570, -805, 574, -800, 609, -617, 607, -556, 700, -535, 670, -586, 571, -655, 463, -894, 449, -933, 389, -899, 311, -929, 292, -1036, 469, -1095, 572, -1171, 574, -1170, 610, -976, 609, -820, 608)
 
 [connection signal="edge_created" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_created"]
 [connection signal="edge_removed" from="RailGrid" to="TrainSpawner" method="_on_rail_grid_edge_removed"]
