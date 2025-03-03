@@ -7,16 +7,18 @@ extends Node
 
 var train_scene = preload("res://train/train.tscn")
 
-var edges_count = 0
+func _ready() -> void:
+    # Wait a frame to make sure edges are populated
+    await get_tree().process_frame
 
-func _process(_delta: float) -> void:
-    var trains = get_tree().get_nodes_in_group("trains") as Array[Train]
+    # Spawn 10 trains on random edges
+    for i in range(10):
+        spawn_train_on_random_edge()
 
-    var stations = get_tree().get_nodes_in_group("stations") as Array[Station]
-
-    if trains.size() * 5 < edges_count:
-        var station = stations.pick_random()
-        var edge = station.edge
+func spawn_train_on_random_edge() -> void:
+    var edges = rail_grid.get_edges()
+    if edges.size() > 0:
+        var edge = edges.pick_random()
 
         var train = train_scene.instantiate()
         train.position = edge.get_edge().world_position
@@ -26,9 +28,3 @@ func _process(_delta: float) -> void:
         train.path_finding = path_finding
 
         on_rails.add_child(train)
-
-func _on_rail_grid_edge_created(_edge: Edge.WithDirection) -> void:
-    edges_count += 1
-
-func _on_rail_grid_edge_removed(_edge: Edge.WithDirection) -> void:
-    edges_count -= 1

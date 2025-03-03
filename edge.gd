@@ -6,8 +6,8 @@ var id: int
 var grid_position: Vector2i
 var world_position: Vector2
 var direction: TileSet.CellNeighbor
-var with_direction: WithDirection
-var with_opposite_direction: WithDirection
+var with_direction: WithDirection # TODO: should this be weakref?
+var with_opposite_direction: WithDirection # TODO: should this be weakref?
 
 func _init(
     grid_position_: Vector2i,
@@ -34,7 +34,7 @@ class WithDirection:
     static var next_id = 0
 
     var id: int
-    var edge: WeakRef
+    var edge: Edge
     var direction: TileSet.CellNeighbor
 
     func _init(
@@ -43,17 +43,17 @@ class WithDirection:
     ) -> void:
         self.id = next_id
         next_id += 1
-        self.edge = weakref(edge_)
+        self.edge = edge_
         self.direction = direction_
 
     func get_edge() -> Edge:
-        return self.edge.get_ref()
+        return self.edge
 
     func get_opposite() -> WithDirection:
-        if self.edge.get_ref().with_direction == self:
-            return self.edge.get_ref().with_opposite_direction
+        if self.edge.with_direction == self:
+            return self.edge.with_opposite_direction
         else:
-            return self.edge.get_ref().with_direction
+            return self.edge.with_direction
 
 class Connection:
     var from: WithDirection

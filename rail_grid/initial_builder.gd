@@ -15,7 +15,6 @@ func create_initial_setup(initial_rail_setup: Node2D) -> void:
         for edge in edges:
             if Geometry2D.is_point_in_polygon(polygon.to_local(edges_grid.to_global(edges_grid.map_to_local(edge))), polygon.polygon):
                 edges_grid.create_edge(edge)
-                edges_grid.block_edge(edge)
 
         polygon.queue_free()
 
